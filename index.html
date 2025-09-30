@@ -18,7 +18,8 @@
 <body>
   <h2>Formulaire Patient - Suivi Diabète</h2>
 
-  <form id="patientForm">
+  <form id="patientForm" enctype="multipart/form-data">
+    
     <label>Téléphone :</label>
     <input type="text" name="telephone" required placeholder="77xxxxxxx">
 
@@ -59,6 +60,9 @@
       <option value="Médecin">Médecin</option>
     </select>
 
+    <label>Photo (optionnelle) :</label>
+    <input type="file" name="photo" accept="image/*">
+
     <input type="hidden" name="source" value="formulaire-patient">
 
     <button type="submit">Envoyer</button>
@@ -71,7 +75,7 @@
       e.preventDefault();
       const form = e.target;
 
-      // complétion automatique date et heure si vide
+      // remplissage automatique date et heure si vide
       const dateField = form.querySelector("[name='date_mesure']");
       if (!dateField.value) dateField.value = new Date().toISOString().slice(0,10);
 
@@ -89,10 +93,8 @@
           body: data
         });
 
-        // masquer le formulaire
+        // masquer le formulaire et afficher confirmation
         form.style.display = "none";
-
-        // afficher le message de confirmation
         document.getElementById("confirmation").style.display = "block";
 
       } catch(err) {
