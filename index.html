@@ -76,10 +76,10 @@
       const form = e.target;
 
       // remplissage automatique date et heure si vide
-      const dateField = form.querySelector("[name='date_mesure']");
+      const dateField = form.querySelector("[name='Date_Mesure']");
       if (!dateField.value) dateField.value = new Date().toISOString().slice(0,10);
 
-      const timeField = form.querySelector("[name='heure_mesure']");
+      const timeField = form.querySelector("[name='Heure_Mesure']");
       if (!timeField.value) {
         const now = new Date();
         timeField.value = now.toTimeString().slice(0,5);
