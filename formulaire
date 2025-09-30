@@ -44,7 +44,7 @@
       const form = e.target;
       const data = new FormData(form);
 
-      await fetch("https://hook.eu1.make.com/TON_WEBHOOK_ID", {
+      await fetch("https://hook.us2.make.com/bx311ogqeeuj772zyjsbln30s9qkmcse", {
         method: "POST",
         body: data
       });
