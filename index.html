@@ -2,55 +2,102 @@
 <html lang="fr">
 <head>
   <meta charset="UTF-8">
-  <title>Formulaire Patient</title>
+  <title>Formulaire Patient - Suivi Diabète</title>
   <style>
     body { font-family: Arial, sans-serif; padding: 20px; background: #f4f7fb; }
-    form { background: #fff; padding: 20px; border-radius: 10px; max-width: 400px; margin: auto; }
+    form, #confirmation { background: #fff; padding: 20px; border-radius: 10px; max-width: 500px; margin: auto; }
     label { display: block; margin-top: 10px; font-weight: bold; }
-    input, textarea, button {
+    input, textarea, select, button {
       width: 100%; padding: 10px; margin-top: 5px; border-radius: 5px; border: 1px solid #ccc;
     }
     button { background: #4CAF50; color: white; border: none; cursor: pointer; margin-top: 15px; }
     button:hover { background: #45a049; }
+    #confirmation { display: none; text-align: center; font-size: 1.2em; color: #4CAF50; }
   </style>
 </head>
 <body>
-  <h2>Suivi Patient</h2>
+  <h2>Formulaire Patient - Suivi Diabète</h2>
+
   <form id="patientForm">
-    <label>Téléphone (authentification)</label>
-    <input type="text" name="telephone" required>
+    <label>Téléphone :</label>
+    <input type="text" name="telephone" required placeholder="77xxxxxxx">
 
-    <label>Glycémie</label>
-    <input type="number" step="0.1" name="glycemie">
+    <label>Date de la mesure :</label>
+    <input type="date" name="date_mesure" required>
 
-    <label>Tension artérielle</label>
-    <input type="text" name="tension">
+    <label>Heure de la mesure :</label>
+    <input type="time" name="heure_mesure" required>
 
-    <label>Poids (kg)</label>
+    <label>Type-Source :</label>
+    <select name="type_source">
+      <option value="Patient" selected>Patient</option>
+      <option value="Médecin">Médecin</option>
+      <option value="Pharmacie">Pharmacie</option>
+    </select>
+
+    <label>Glycémie (mg/dL) :</label>
+    <input type="number" step="0.1" name="glycemie" required>
+
+    <label>À jeun ?</label>
+    <select name="a_jeun">
+      <option value="Oui">Oui</option>
+      <option value="Non">Non</option>
+    </select>
+
+    <label>Tension artérielle :</label>
+    <input type="text" name="tension" placeholder="ex: 12/8">
+
+    <label>Poids (kg) :</label>
     <input type="number" step="0.1" name="poids">
 
-    <label>Commentaire</label>
-    <textarea name="commentaire"></textarea>
+    <label>Observations / Commentaires :</label>
+    <textarea name="observations" placeholder="Ex: après repas, fatigue, ..."></textarea>
 
-    <label>Photo (optionnelle)</label>
-    <input type="file" name="photo" accept="image/*">
+    <label>Structure :</label>
+    <select name="structure">
+      <option value="Pharmacie">Pharmacie</option>
+      <option value="Médecin">Médecin</option>
+    </select>
+
+    <input type="hidden" name="source" value="formulaire-patient">
 
     <button type="submit">Envoyer</button>
   </form>
+
+  <div id="confirmation">Données envoyées ✅</div>
 
   <script>
     document.getElementById("patientForm").addEventListener("submit", async function(e) {
       e.preventDefault();
       const form = e.target;
+
+      // complétion automatique date et heure si vide
+      const dateField = form.querySelector("[name='date_mesure']");
+      if (!dateField.value) dateField.value = new Date().toISOString().slice(0,10);
+
+      const timeField = form.querySelector("[name='heure_mesure']");
+      if (!timeField.value) {
+        const now = new Date();
+        timeField.value = now.toTimeString().slice(0,5);
+      }
+
       const data = new FormData(form);
 
-      await fetch("https://hook.us2.make.com/bx311ogqeeuj772zyjsbln30s9qkmcse", {
-        method: "POST",
-        body: data
-      });
+      try {
+        await fetch("https://hook.us2.make.com/bx311ogqeeuj772zyjsbln30s9qkmcse", {
+          method: "POST",
+          body: data
+        });
 
-      alert("Données envoyées avec succès ✅");
-      form.reset();
+        // masquer le formulaire
+        form.style.display = "none";
+
+        // afficher le message de confirmation
+        document.getElementById("confirmation").style.display = "block";
+
+      } catch(err) {
+        alert("Erreur d'envoi : " + err);
+      }
     });
   </script>
 </body>
